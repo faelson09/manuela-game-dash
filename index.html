@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Quiz Admin</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --card: #ffffff;
+        --stroke: #e5e7eb;
+        --txt: #0b1020;
+        --muted: #475569;
+        --blue: #5b9bff;
+        --blue2: #7db3ff;
+        --pink: #ff6fb3;
+        --pink2: #ff82c4;
+        --green: #4ade80;
+        --red: #f87171;
+        --yellow: #fbbf24;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--txt);
+        min-height: 100vh;
+        display: flex;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: var(--card);
+        border-right: 1px solid var(--stroke);
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-align: center;
+        background: linear-gradient(90deg, var(--blue), var(--pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-item {
+        display: block;
+        padding: 12px 16px;
+        margin: 8px 0;
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--muted);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: linear-gradient(
+          90deg,
+          rgba(91, 155, 255, 0.2),
+          rgba(255, 111, 179, 0.2)
+        );
+        color: var(--txt);
+        transform: translateX(5px);
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        padding: 30px;
+        overflow-y: auto;
+        min-height: 100vh;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .menu-toggle {
+        display: none;
+        background: transparent;
+        border: 1px solid var(--stroke);
+        color: var(--txt);
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        background: linear-gradient(90deg, var(--blue), var(--pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .logout-btn {
+        background: linear-gradient(90deg, var(--red), #ff8a8a);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: transform 0.2s ease;
+      }
+
+      .logout-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(2, 6, 23, 0.06);
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, var(--blue), var(--blue2));
+        color: white;
+        box-shadow: 0 4px 15px rgba(91, 155, 255, 0.3);
+      }
+
+      .btn-success {
+        background: linear-gradient(90deg, var(--green), #6ee7b7);
+        color: white;
+      }
+
+      .btn-danger {
+        background: linear-gradient(90deg, var(--red), #ff8a8a);
+        color: white;
+      }
+
+      .btn-warning {
+        background: linear-gradient(90deg, var(--yellow), #fcd34d);
+        color: #0b1020;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(91, 155, 255, 0.4);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--stroke);
+        border-radius: 10px;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(91, 155, 255, 0.1);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--stroke);
+      }
+
+      .table th {
+        background: rgba(91, 155, 255, 0.1);
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .table tr:hover {
+        background: #f8fafc;
+      }
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background: rgba(74, 222, 128, 0.2);
+        color: var(--green);
+      }
+
+      .badge-danger {
+        background: rgba(248, 113, 113, 0.2);
+        color: var(--red);
+      }
+
+      .badge-warning {
+        background: rgba(251, 191, 36, 0.2);
+        color: var(--yellow);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid;
+      }
+
+      .alert-success {
+        background: rgba(74, 222, 128, 0.1);
+        border-color: var(--green);
+        color: var(--green);
+      }
+
+      .alert-error {
+        background: rgba(248, 113, 113, 0.1);
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(91, 155, 255, 0.1);
+      }
+
+      .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        background: linear-gradient(90deg, var(--blue), var(--pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .menu-toggle {
+          display: inline-block;
+        }
+
+        .sidebar {
+          width: 80%;
+          max-width: 320px;
+          background: var(--card);
+          border-right: 1px solid var(--stroke);
+          padding: 20px;
+          position: fixed;
+          height: 100vh;
+          overflow-y: auto;
+          top: 0;
+          left: 0;
+          transform: translateX(-100%);
+          transition: transform 0.25s ease;
+          z-index: 1000;
+        }
+
+        .nav-open .sidebar {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 20px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="logo">🎯 Quiz Admin</div>
+      <nav>
+        <a href="#" class="nav-item active" data-section="dashboard">
+          📊 Dashboard
+        </a>
+        <a href="#" class="nav-item" data-section="questions"> ❓ Perguntas </a>
+        <a href="#" class="nav-item" data-section="users"> 👥 Usuários </a>
+        <a href="#" class="nav-item" data-section="admins">
+          🔐 Administradores
+        </a>
+        <a href="#" class="nav-item" data-section="settings">
+          ⚙️ Configurações
+        </a>
+      </nav>
+    </div>
+
+    <div class="main-content">
+      <div class="header">
+        <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+        <button class="logout-btn" onclick="logout()">Sair</button>
+      </div>
+
+      <div id="dashboard-section" class="section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="total-questions">0</div>
+            <div class="stat-label">Total de Perguntas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="total-users">0</div>
+            <div class="stat-label">Total de Usuários</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="total-admins">0</div>
+            <div class="stat-label">Administradores</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="total-points">0</div>
+            <div class="stat-label">Pontos Distribuídos</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Atividade Recente</h3>
+          <p>
+            Bem-vindo ao painel administrativo do Quiz! Aqui você pode gerenciar
+            perguntas, usuários e configurações do sistema.
+          </p>
+        </div>
+      </div>
+
+      <div id="questions-section" class="section hidden">
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 20px;
+            "
+          >
+            <h3>Gerenciar Perguntas</h3>
+            <button class="btn btn-primary" onclick="showAddQuestionForm()">
+              + Nova Pergunta
+            </button>
+          </div>
+
+          <div id="question-form" class="hidden">
+            <form id="add-question-form">
+              <div class="form-group">
+                <label class="form-label">Texto da Pergunta</label>
+                <textarea
+                  class="form-textarea"
+                  id="question-text"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select class="form-select" id="question-category">
+                  <option value="">Selecione a categoria</option>
+                  <option value="Antigo Testamento">Antigo Testamento</option>
+                  <option value="Novo Testamento">Novo Testamento</option>
+                  <option value="Geral">Geral</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Nível de Dificuldade</label>
+                <select class="form-select" id="question-level" required>
+                  <option value="">Selecione o nível</option>
+                  <option value="fácil">Fácil</option>
+                  <option value="médio">Médio</option>
+                  <option value="difícil">Difícil</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Pontos por Resposta Correta</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  id="question-points"
+                  min="1"
+                  max="100"
+                  value="10"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Alternativas</label>
+                <div
+                  style="display: grid; grid-template-columns: 1fr; gap: 10px"
+                >
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="question-alt-0"
+                    placeholder="Alternativa 1"
+                    required
+                  />
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="question-alt-1"
+                    placeholder="Alternativa 2"
+                    required
+                  />
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="question-alt-2"
+                    placeholder="Alternativa 3"
+                    required
+                  />
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="question-alt-3"
+                    placeholder="Alternativa 4"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label"
+                  >Alternativa Correta (índice 0-3)</label
+                >
+                <select class="form-select" id="question-correct" required>
+                  <option value="">Selecione a alternativa correta</option>
+                  <option value="0">Alternativa 1</option>
+                  <option value="1">Alternativa 2</option>
+                  <option value="2">Alternativa 3</option>
+                  <option value="3">Alternativa 4</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tags (separadas por vírgula)</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="question-tags"
+                  placeholder="Ex: história, brasil, século XIX"
+                />
+              </div>
+
+              <div style="display: flex; gap: 10px">
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  id="submit-question-btn"
+                >
+                  Salvar Pergunta
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  onclick="hideAddQuestionForm()"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div id="questions-list">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Pergunta</th>
+                    <th>Categoria</th>
+                    <th>Nível</th>
+                    <th>Pontos</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="questions-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="users-section" class="section hidden">
+        <div class="card">
+          <h3>Gerenciar Usuários</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>ID Único</th>
+                  <th>Pontos</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="admins-section" class="section hidden">
+        <div class="card">
+          <h3>Gerenciar Administradores</h3>
+          <div id="admin-form" class="hidden">
+            <form id="add-admin-form">
+              <div class="form-group">
+                <label class="form-label">Selecionar Usuário</label>
+                <select class="form-select" id="admin-user-select" required>
+                  <option value="">Selecione um usuário</option>
+                </select>
+              </div>
+
+              <div style="display: flex; gap: 10px">
+                <button type="submit" class="btn btn-success">
+                  Tornar Admin
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  onclick="hideAddAdminForm()"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div style="margin-bottom: 20px">
+            <button class="btn btn-primary" onclick="showAddAdminForm()">
+              + Adicionar Admin
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>ID Único</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="admins-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="settings-section" class="section hidden">
+        <div class="card">
+          <h3>Configurações do Sistema</h3>
+          <p>
+            Configurações gerais do sistema estarão disponíveis aqui em breve.
+          </p>
+        </div>
+      </div>
+
+      <div id="alert-container"></div>
+    </div>
+
+    <script>
+      const API = "http://localhost:5000";
+      let currentUser = null;
+      let questions = [];
+      let users = [];
+
+      // Initialize dashboard
+      document.addEventListener("DOMContentLoaded", async () => {
+        await checkAuth();
+        await loadDashboardData();
+        setupNavigation();
+        setupEventListeners();
+      });
+
+      // Authentication
+      async function checkAuth() {
+        const sessionId = localStorage.getItem("sessionId");
+        if (!sessionId) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API}/usuarios/${sessionId}`);
+          if (!response.ok) {
+            throw new Error("Session invalid");
+          }
+
+          currentUser = await response.json();
+          if (!currentUser.is_admin) {
+            alert(
+              "Acesso negado. Apenas administradores podem acessar esta área."
+            );
+            window.location.href = "/index.html";
+            return;
+          }
+        } catch (error) {
+          localStorage.removeItem("sessionId");
+          localStorage.removeItem("sessionName");
+          window.location.href = "login.html";
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("sessionId");
+        localStorage.removeItem("sessionName");
+        window.location.href = "login.html";
+      }
+
+      // Navigation
+      function setupNavigation() {
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const section = item.dataset.section;
+            showSection(section);
+
+            // Update active nav item
+            document
+              .querySelectorAll(".nav-item")
+              .forEach((nav) => nav.classList.remove("active"));
+            item.classList.add("active");
+
+            // Close menu on mobile after navigation
+            document.body.classList.remove("nav-open");
+          });
+        });
+      }
+
+      function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll(".section").forEach((section) => {
+          section.classList.add("hidden");
+        });
+
+        // Show selected section
+        document
+          .getElementById(`${sectionName}-section`)
+          .classList.remove("hidden");
+
+        // Update page title
+        const titles = {
+          dashboard: "Dashboard",
+          questions: "Perguntas",
+          users: "Usuários",
+          admins: "Administradores",
+          settings: "Configurações",
+        };
+        document.getElementById("page-title").textContent = titles[sectionName];
+
+        // Load section data
+        if (sectionName === "questions") {
+          loadQuestions();
+        } else if (sectionName === "users") {
+          loadUsers();
+        } else if (sectionName === "admins") {
+          loadAdmins();
+        }
+      }
+
+      function toggleMenu() {
+        document.body.classList.toggle("nav-open");
+      }
+
+      // Dashboard Data
+      async function loadDashboardData() {
+        try {
+          const [questionsRes, usersRes] = await Promise.all([
+            fetch(`${API}/perguntas`),
+            fetch(`${API}/usuarios`),
+          ]);
+
+          questions = await questionsRes.json();
+          users = await usersRes.json();
+
+          // Update stats
+          document.getElementById("total-questions").textContent =
+            questions.length;
+          document.getElementById("total-users").textContent = users.length;
+          document.getElementById("total-admins").textContent = users.filter(
+            (u) => u.is_admin
+          ).length;
+
+          const totalPoints = users.reduce(
+            (sum, user) => sum + user.total_pontos,
+            0
+          );
+          document.getElementById("total-points").textContent = totalPoints;
+        } catch (error) {
+          showAlert("Erro ao carregar dados do dashboard", "error");
+        }
+      }
+
+      // Questions Management
+      async function loadQuestions() {
+        try {
+          const response = await fetch(`${API}/perguntas`);
+          questions = await response.json();
+
+          const tbody = document.getElementById("questions-table-body");
+          tbody.innerHTML = "";
+
+          questions.forEach((question) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${question.id.substring(0, 8)}...</td>
+              <td>${question.text.substring(0, 50)}${
+              question.text.length > 50 ? "..." : ""
+            }</td>
+              <td>${question.category || "-"}</td>
+              <td><span class="badge badge-${getLevelBadgeClass(
+                question.level
+              )}">${question.level || "-"}</span></td>
+              <td>${question.points || 10}</td>
+              <td>
+                <button class="btn btn-warning" onclick="editQuestion('${
+                  question.id
+                }')">Editar</button>
+                <button class="btn btn-danger" onclick="deleteQuestion('${
+                  question.id
+                }')">Excluir</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          showAlert("Erro ao carregar perguntas", "error");
+        }
+      }
+
+      function getLevelBadgeClass(level) {
+        switch (level) {
+          case "fácil":
+            return "success";
+          case "médio":
+            return "warning";
+          case "difícil":
+            return "danger";
+          default:
+            return "warning";
+        }
+      }
+
+      function showAddQuestionForm() {
+        document.getElementById("question-form").classList.remove("hidden");
+      }
+
+      function hideAddQuestionForm() {
+        document.getElementById("question-form").classList.add("hidden");
+        document.getElementById("add-question-form").reset();
+
+        // Remove edit input if exists
+        const editInput = document.getElementById("edit-question-id");
+        if (editInput) {
+          editInput.remove();
+        }
+
+        // Reset button text
+        document.getElementById("submit-question-btn").textContent =
+          "Salvar Pergunta";
+      }
+
+      // Users Management
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API}/usuarios`);
+          users = await response.json();
+
+          const tbody = document.getElementById("users-table-body");
+          tbody.innerHTML = "";
+
+          users.forEach((user) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${user.nome}</td>
+              <td>${user.nomeunico}</td>
+              <td>${user.total_pontos}</td>
+              <td><span class="badge ${
+                user.is_admin ? "badge-danger" : "badge-success"
+              }">${user.is_admin ? "Admin" : "Usuário"}</span></td>
+              <td>
+               <!-- <button class="btn btn-warning" onclick="resetUserPoints('${
+                 user.id
+               }')">Zerar Pontos</button>-->
+                <button class="btn btn-danger" onclick="deleteUser('${
+                  user.id
+                }')">Excluir</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          showAlert("Erro ao carregar usuários", "error");
+        }
+      }
+
+      // Admins Management
+      async function loadAdmins() {
+        try {
+          const response = await fetch(`${API}/usuarios`);
+          users = await response.json();
+
+          // Update user select for admin form
+          const userSelect = document.getElementById("admin-user-select");
+          userSelect.innerHTML =
+            '<option value="">Selecione um usuário</option>';
+
+          users
+            .filter((u) => !u.is_admin)
+            .forEach((user) => {
+              const option = document.createElement("option");
+              option.value = user.id;
+              option.textContent = `${user.nome} (${user.nomeunico})`;
+              userSelect.appendChild(option);
+            });
+
+          // Load admins table
+          const tbody = document.getElementById("admins-table-body");
+          tbody.innerHTML = "";
+
+          users
+            .filter((u) => u.is_admin)
+            .forEach((user) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+              <td>${user.nome}</td>
+              <td>${user.nomeunico}</td>
+              <td><span class="badge badge-danger">Admin</span></td>
+              <td>
+                <button class="btn btn-warning" onclick="removeAdmin('${user.id}')">Remover Admin</button>
+              </td>
+            `;
+              tbody.appendChild(row);
+            });
+        } catch (error) {
+          showAlert("Erro ao carregar administradores", "error");
+        }
+      }
+
+      function showAddAdminForm() {
+        document.getElementById("admin-form").classList.remove("hidden");
+      }
+
+      function hideAddAdminForm() {
+        document.getElementById("admin-form").classList.add("hidden");
+        document.getElementById("add-admin-form").reset();
+      }
+
+      // Event Listeners
+      function setupEventListeners() {
+        // Add question form
+        document
+          .getElementById("add-question-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await addQuestion();
+          });
+
+        // Add admin form
+        document
+          .getElementById("add-admin-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await addAdmin();
+          });
+      }
+
+      // API Functions
+      async function addQuestion() {
+        try {
+          const alternatives = [
+            document.getElementById("question-alt-0").value,
+            document.getElementById("question-alt-1").value,
+            document.getElementById("question-alt-2").value,
+            document.getElementById("question-alt-3").value,
+          ]
+            .map((a) => a.trim())
+            .filter((a) => a);
+          if (alternatives.length !== 4) {
+            showAlert("Informe as quatro alternativas.", "error");
+            return;
+          }
+          const tags = document
+            .getElementById("question-tags")
+            .value.split(",")
+            .map((t) => t.trim())
+            .filter((t) => t);
+          const editId = document.getElementById("edit-question-id")?.value;
+
+          const questionData = {
+            text: document.getElementById("question-text").value,
+            alternatives: alternatives,
+            correct_index: parseInt(
+              document.getElementById("question-correct").value
+            ),
+            category:
+              document.getElementById("question-category").value || null,
+            level: document.getElementById("question-level").value,
+            tags: tags,
+            points: parseInt(document.getElementById("question-points").value),
+          };
+
+          const url = editId
+            ? `${API}/perguntas/${editId}`
+            : `${API}/perguntas`;
+          const method = editId ? "PUT" : "POST";
+
+          const response = await fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(questionData),
+          });
+
+          if (response.ok) {
+            const action = editId ? "atualizada" : "adicionada";
+            showAlert(`Pergunta ${action} com sucesso!`, "success");
+            hideAddQuestionForm();
+            loadQuestions();
+            loadDashboardData();
+          } else {
+            throw new Error("Erro ao salvar pergunta");
+          }
+        } catch (error) {
+          showAlert("Erro ao salvar pergunta: " + error.message, "error");
+        }
+      }
+
+      async function deleteQuestion(id) {
+        if (!confirm("Tem certeza que deseja excluir esta pergunta?")) return;
+
+        try {
+          const response = await fetch(`${API}/perguntas/${id}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            showAlert("Pergunta excluída com sucesso!", "success");
+            loadQuestions();
+            loadDashboardData();
+          } else {
+            throw new Error("Erro ao excluir pergunta");
+          }
+        } catch (error) {
+          showAlert("Erro ao excluir pergunta: " + error.message, "error");
+        }
+      }
+
+      async function editQuestion(id) {
+        try {
+          const question = questions.find((q) => q.id === id);
+          if (!question) {
+            showAlert("Pergunta não encontrada", "error");
+            return;
+          }
+
+          // Preencher o formulário com os dados da pergunta
+          document.getElementById("question-text").value = question.text;
+          document.getElementById("question-category").value =
+            question.category || "";
+          document.getElementById("question-level").value =
+            question.level || "";
+          document.getElementById("question-points").value =
+            question.points || 10;
+          const [a0, a1, a2, a3] = [
+            question.alternatives[0] || "",
+            question.alternatives[1] || "",
+            question.alternatives[2] || "",
+            question.alternatives[3] || "",
+          ];
+          document.getElementById("question-alt-0").value = a0;
+          document.getElementById("question-alt-1").value = a1;
+          document.getElementById("question-alt-2").value = a2;
+          document.getElementById("question-alt-3").value = a3;
+          document.getElementById("question-correct").value =
+            question.correct_index;
+          document.getElementById("question-tags").value = question.tags
+            ? question.tags.join(", ")
+            : "";
+
+          // Mostrar o formulário
+          document.getElementById("question-form").classList.remove("hidden");
+
+          // Adicionar um campo hidden para indicar que é uma edição
+          let editInput = document.getElementById("edit-question-id");
+          if (!editInput) {
+            editInput = document.createElement("input");
+            editInput.type = "hidden";
+            editInput.id = "edit-question-id";
+            document.getElementById("add-question-form").appendChild(editInput);
+          }
+          editInput.value = id;
+
+          // Atualizar texto do botão
+          document.getElementById("submit-question-btn").textContent =
+            "Atualizar Pergunta";
+
+          // Scroll para o formulário
+          document
+            .getElementById("question-form")
+            .scrollIntoView({ behavior: "smooth" });
+        } catch (error) {
+          showAlert(
+            "Erro ao carregar pergunta para edição: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function addAdmin() {
+        try {
+          const userId = document.getElementById("admin-user-select").value;
+          if (!userId) return;
+
+          const response = await fetch(`${API}/usuarios/${userId}/admin`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ is_admin: true }),
+          });
+
+          if (response.ok) {
+            showAlert("Usuário promovido a administrador!", "success");
+            hideAddAdminForm();
+            loadAdmins();
+            loadDashboardData();
+          } else {
+            throw new Error("Erro ao promover usuário");
+          }
+        } catch (error) {
+          showAlert("Erro ao promover usuário: " + error.message, "error");
+        }
+      }
+
+      async function removeAdmin(id) {
+        if (
+          !confirm(
+            "Tem certeza que deseja remover os privilégios de administrador?"
+          )
+        )
+          return;
+
+        try {
+          const response = await fetch(`${API}/usuarios/${id}/admin`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ is_admin: false }),
+          });
+
+          if (response.ok) {
+            showAlert("Privilégios de administrador removidos!", "success");
+            loadAdmins();
+            loadDashboardData();
+          } else {
+            throw new Error("Erro ao remover privilégios");
+          }
+        } catch (error) {
+          showAlert("Erro ao remover privilégios: " + error.message, "error");
+        }
+      }
+
+      async function deleteUser(id) {
+        if (
+          !confirm(
+            "Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita."
+          )
+        )
+          return;
+
+        try {
+          const response = await fetch(`${API}/usuarios/${id}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            showAlert("Usuário excluído com sucesso!", "success");
+            loadUsers();
+            loadDashboardData();
+          } else {
+            throw new Error("Erro ao excluir usuário");
+          }
+        } catch (error) {
+          showAlert("Erro ao excluir usuário: " + error.message, "error");
+        }
+      }
+
+      async function resetUserPoints(id) {
+        if (!confirm("Tem certeza que deseja zerar os pontos deste usuário?"))
+          return;
+
+        try {
+          // Find user to get current points
+          const user = users.find((u) => u.id === id);
+          if (!user) throw new Error("Usuário não encontrado");
+
+          const response = await fetch(`${API}/usuarios/${id}/point`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ point: -user.total_pontos }),
+          });
+
+          if (response.ok) {
+            showAlert("Pontos zerados com sucesso!", "success");
+            loadUsers();
+            loadDashboardData();
+          } else {
+            throw new Error("Erro ao zerar pontos");
+          }
+        } catch (error) {
+          showAlert("Erro ao zerar pontos: " + error.message, "error");
+        }
+      }
+
+      // Utility Functions
+      function showAlert(message, type) {
+        const alertContainer = document.getElementById("alert-container");
+        const alert = document.createElement("div");
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+
+        alertContainer.appendChild(alert);
+
+        setTimeout(() => {
+          alert.remove();
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
